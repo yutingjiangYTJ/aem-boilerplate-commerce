@@ -28,10 +28,22 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import { rootLink } from '../../scripts/scripts.js';
 
+/**
+ * Checks if the current page is for updating a product in the cart
+ * @returns {Object|null} The update info object or null
+ */
+function getUpdateCartInfo() {
+  return window.location.search.includes('update_cart_item=true') ? {
+    isUpdating: true,
+    cartItemId: new URLSearchParams(window.location.search).get('cart_item_id') || null,
+  } : null;
+}
+
 export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
   const labels = await fetchPlaceholders();
+  const updateCartInfo = getUpdateCartInfo();
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -132,13 +144,13 @@ export default async function decorate(block) {
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
-      children: labels.PDP?.Product?.AddToCart?.label,
+      children: labels.PDP?.Product?.AddToCart?.label || 'Add to Cart',
       icon: Icon({ source: 'Cart' }),
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.Custom?.AddingToCart?.label,
+            children: labels.Custom?.AddingToCart?.label || 'Adding to Cart',
             disabled: true,
           }));
 
@@ -150,6 +162,20 @@ export default async function decorate(block) {
           if (valid) {
             const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
             await addProductsToCart([{ ...values }]);
+
+            if (updateCartInfo && product) {
+              sessionStorage.setItem('cart_updated_product', JSON.stringify({
+                id: values.sku,
+                name: product.name,
+                timestamp: Date.now(),
+              }));
+
+              const cartUrl = new URL(rootLink('/cart'), window.location.origin);
+              cartUrl.searchParams.append('updated_product_name', encodeURIComponent(product.name));
+              cartUrl.searchParams.append('updated_product_sku', values.sku);
+
+              window.location.href = cartUrl.toString();
+            }
           }
 
           // reset any previous alerts if successful
@@ -175,7 +201,7 @@ export default async function decorate(block) {
         } finally {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.PDP?.Product?.AddToCart?.label,
+            children: labels.PDP?.Product?.AddToCart?.label || 'Add to Cart',
             disabled: false,
           }));
         }
