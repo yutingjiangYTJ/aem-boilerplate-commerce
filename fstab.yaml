@@ -1,7 +1,0 @@
-mountpoints:
-  /:
-    url: https://drive.google.com/drive/folders/16rLvNSy-xh-3apNhiA_wyx2-c1faMYWs
-    type: markup
-
-folders:
-  /products/: /products/default
