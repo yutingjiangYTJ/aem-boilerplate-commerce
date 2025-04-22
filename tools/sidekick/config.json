@@ -1,5 +1,5 @@
 {
-  "project": "aem-boilerplate-commerce-1",
+  "project": "aem-boilerplate-commerce",
   "plugins": [
     {
       "id": "cif",
@@ -7,7 +7,7 @@
       "environments": [
         "edit"
       ],
-      "url": "https://main--aem-boilerplate-commerce-1--yutingj.aem.live/tools/picker/dist/index.html",
+      "url": "https://main--aem-boilerplate-commerce--yutingjiangYTJ.aem.live/tools/picker/dist/index.html",
       "isPalette": true,
       "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
     },
@@ -17,7 +17,7 @@
       "environments": [
         "edit"
       ],
-      "url": "https://main--aem-boilerplate-commerce-1--yutingj.aem.live/tools/segments/dist/index.html",
+      "url": "https://main--aem-boilerplate-commerce--yutingjiangYTJ.aem.live/tools/segments/dist/index.html",
       "isPalette": true,
       "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
     }
