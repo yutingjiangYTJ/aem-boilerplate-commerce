@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "code": {
+    "owner": "yutingjiangYTJ",
+    "repo": "aem-boilerplate-commerce",
+    "source": {
+      "type": "github",
+      "url": "https://github.com/yutingjiangYTJ/aem-boilerplate-commerce"
+    }
+  },
+  "content": {
+    "source": {
+      "url": "https://drive.google.com/drive/folders/16rLvNSy-xh-3apNhiA_wyx2-c1faMYWs",
+      "type": "googledrive"
+    }
+  },
+  "folders": {
+    "/products/": "/products/default"
+  },
+  "cdn": {
+    "live": {
+      "host": "main--mysite--aemtutorial.aem.live"
+    },
+    "preview": {
+      "host": "main--mysite--aemtutorial.aem.page"
+    }
+  },
+  "headers": {},
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://www.aemshop.net/graphql",
+      "commerce-endpoint": "https://www.aemshop.net/cs-graphql",
+      "headers": {
+        "cs": {
+          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "Magento-Store-Code": "main_website_store",
+          "Magento-Store-View-Code": "default",
+          "Magento-Website-Code": "base",
+          "x-api-key": "4dfa19c9fe6f4cccade55cc5b3da94f7",
+          "Magento-Environment-Id": "f38a0de0-764b-41fa-bd2c-5bc2f3c7b39a"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Production",
+        "store-id": "1",
+        "store-name": "AEM Tutorial Store",
+        "store-url": "https://main--mysite--aemtutorial.aem.page",
+        "store-view-id": "1",
+        "store-view-name": "AEM Tutorial Store View",
+        "website-id": "1",
+        "website-name": "AEM Tutorial Website"
+      }
+    }
+  },
+  "robots": {
+    "txt": "User-agent: *\nAllow: /\nDisallow: /drafts/\nDisallow: /enrichment/\nDisallow: /tools/\nDisallow: /plugins/experimentation/\n\nSitemap: https://main--mysite--aemtutorial.aem.page/sitemap-index.xml"
+  },
+  "sidekick": {
+    "project": "Boilerplate",
+    "plugins": [
+      {
+        "id": "cif",
+        "title": "Commerce",
+        "environments": [
+          "edit"
+        ],
+        "url": "https://main--mysite--aemtutorial.aem.live/tools/picker/dist/index.html",
+        "isPalette": true,
+        "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
+      },
+      {
+        "id": "personalisation",
+        "title": "Personalisation",
+        "environments": [
+          "edit"
+        ],
+        "url": "https://main--mysite--aemtutorial.aem.live/tools/segments/dist/index.html",
+        "isPalette": true,
+        "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
+      }
+    ]
+  },
+  "access": {
+    "admin": {
+      "role": {
+        "config_admin": [
+          "yutingj@adobe.com"
+        ]
+      },
+      "requireAuth": "auto"
+    }
+  }
+}

@@ -20,12 +20,12 @@
         "base-currency-code": "USD",
         "environment": "Production",
         "store-id": 1,
-        "store-name": "Your Store Name",
-        "store-url": "https://main--aem-boilerplate-commerce--yutingjiangYTJ.aem.page",
+        "store-name": "AEM Tutorial Store",
+        "store-url": "https://main--mysite--aemtutorial.aem.page",
         "store-view-id": 1,
-        "store-view-name": "Your Store View",
+        "store-view-name": "AEM Tutorial Store View",
         "website-id": 1,
-        "website-name": "Your Website"
+        "website-name": "AEM Tutorial Website"
       }
     }
   }
