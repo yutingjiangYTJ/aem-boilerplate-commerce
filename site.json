@@ -19,10 +19,10 @@
   },
   "cdn": {
     "live": {
-      "host": "main--mysite--aemtutorial.aem.live"
+      "host": "main--mysite--adobe-commerce.aem.live"
     },
     "preview": {
-      "host": "main--mysite--aemtutorial.aem.page"
+      "host": "main--mysite--adobe-commerce.aem.page"
     }
   },
   "headers": {},
@@ -45,7 +45,7 @@
         "environment": "Production",
         "store-id": "1",
         "store-name": "AEM Tutorial Store",
-        "store-url": "https://main--mysite--aemtutorial.aem.page",
+        "store-url": "https://main--mysite--adobe-commerce.aem.page",
         "store-view-id": "1",
         "store-view-name": "AEM Tutorial Store View",
         "website-id": "1",
@@ -54,7 +54,7 @@
     }
   },
   "robots": {
-    "txt": "User-agent: *\nAllow: /\nDisallow: /drafts/\nDisallow: /enrichment/\nDisallow: /tools/\nDisallow: /plugins/experimentation/\n\nSitemap: https://main--mysite--aemtutorial.aem.page/sitemap-index.xml"
+    "txt": "User-agent: *\nAllow: /\nDisallow: /drafts/\nDisallow: /enrichment/\nDisallow: /tools/\nDisallow: /plugins/experimentation/\n\nSitemap: https://main--mysite--adobe-commerce.aem.page/sitemap-index.xml"
   },
   "sidekick": {
     "project": "Boilerplate",
@@ -65,7 +65,7 @@
         "environments": [
           "edit"
         ],
-        "url": "https://main--mysite--aemtutorial.aem.live/tools/picker/dist/index.html",
+        "url": "https://main--mysite--adobe-commerce.aem.live/tools/picker/dist/index.html",
         "isPalette": true,
         "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
       },
@@ -75,7 +75,7 @@
         "environments": [
           "edit"
         ],
-        "url": "https://main--mysite--aemtutorial.aem.live/tools/segments/dist/index.html",
+        "url": "https://main--mysite--adobe-commerce.aem.live/tools/segments/dist/index.html",
         "isPalette": true,
         "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
       }
