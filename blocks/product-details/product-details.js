@@ -194,7 +194,7 @@ export default async function decorate(block) {
         } finally {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.PDP?.Product?.AddToCart?.label || 'Add to Cart',
+            children: labels.PDP?.Product?.AddToCart?.label,
             disabled: false,
           }));
         }
