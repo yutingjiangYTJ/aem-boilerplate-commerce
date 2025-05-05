@@ -33,9 +33,10 @@ import { rootLink } from '../../scripts/scripts.js';
  * @returns {Object|null} The update info object or null
  */
 function getUpdateCartInfo() {
-  return window.location.search.includes('updateCartItem=true') ? {
+  const itemUid = new URLSearchParams(window.location.search).get('itemUid');
+  return itemUid ? {
     isUpdating: true,
-    itemUid: new URLSearchParams(window.location.search).get('itemUid') || null,
+    itemUid,
   } : null;
 }
 
