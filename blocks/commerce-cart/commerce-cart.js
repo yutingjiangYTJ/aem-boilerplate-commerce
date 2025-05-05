@@ -23,23 +23,56 @@ import { rootLink } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/commerce.js';
 
 /**
- * Chcks for cart update information from URL and sessionStorage
+ * Checks for cart update information from URL
  * @returns {Object|null} The updated product info or null if no update
  */
 function getCartUpdateInfo() {
   const urlParams = new URLSearchParams(window.location.search);
-  const updatedProductName = urlParams.get('updated_product_name');
+  const updatedProductName = urlParams.get('updatedProductName');
   if (updatedProductName) {
     return {
       name: decodeURIComponent(updatedProductName),
-      id: urlParams.get('updated_product_sku'),
+      id: urlParams.get('updatedProductSku'),
     };
   }
 
-  const storedInfo = sessionStorage.getItem('cart_updated_product');
-  if (storedInfo) {
-    sessionStorage.removeItem('cart_updated_product');
-    try { return JSON.parse(storedInfo); } catch { }
+  const updatedSku = urlParams.get('updatedSku');
+  if (updatedSku) {
+    try {
+      if (cart?.items) {
+        const item = cart.items.find(i =>
+          i.product?.sku === updatedSku || i.sku === updatedSku
+        );
+        if (item) {
+          return {
+            name: item.product?.name || item.name,
+            id: updatedSku
+          };
+        }
+      }
+      return { id: updatedSku };
+    } catch (e) {
+      console.error('Error processing updatedSku:', e);
+      return { id: updatedSku };
+    }
+  }
+
+  const itemUid = urlParams.get('itemUid');
+  if (itemUid) {
+    try {
+      if (cart?.items) {
+        const item = cart.items.find(i => i.uid === itemUid);
+        if (item) {
+          return {
+            name: item.product?.name || item.name,
+            id: item.product?.sku || item.sku,
+            uid: itemUid
+          };
+        }
+      }
+    } catch (e) {
+      console.error('Error processing itemUid:', e);
+    }
   }
 
   return null;
@@ -58,14 +91,7 @@ export default async function decorate(block) {
     'checkout-url': checkoutURL = '',
   } = readBlockConfig(block);
 
-  const labels = await fetchPlaceholders();
-
-  if (window.placeholders?.default) {
-    window.placeholders.default.Cart = {
-      ...window.placeholders.default.Cart,
-      UpdatedProductMessage: '{product} was updated in your shopping cart.'
-    };
-  }
+  const placeholders = await fetchPlaceholders();
 
   const cart = Cart.getCartDataFromCache();
 
@@ -98,24 +124,28 @@ export default async function decorate(block) {
   block.appendChild(fragment);
 
   const updateInfo = getCartUpdateInfo();
-  updateInfo?.name && (async () => {
-    const message = (labels?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
-      .replace('{product}', updateInfo.name);
-    
-    await UI.render(InLineAlert, {
-      heading: message,
-      type: 'success',
-      variant: 'primary',
-      icon: Icon({ source: 'CheckWithCircle' }),
-      'aria-live': 'assertive',
-      role: 'alert',
-      onDismiss: () => $notification.innerHTML = ''
-    })($notification);
-    
-    if (window.location.search) {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  })();
+  if (updateInfo) {
+    (async () => {
+      if (updateInfo.name) {
+        const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
+          .replace('{product}', updateInfo.name);
+
+        await UI.render(InLineAlert, {
+          heading: message,
+          type: 'success',
+          variant: 'primary',
+          icon: Icon({ source: 'CheckWithCircle' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          onDismiss: () => $notification.innerHTML = ''
+        })($notification);
+      }
+
+      if (window.location.search) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    })();
+  }
 
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
@@ -138,8 +168,8 @@ export default async function decorate(block) {
       routeProduct: product => {
         const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
         const url = new URL(rootLink(path), window.location.origin);
-        url.searchParams.set('update_cart_item', 'true');
-        url.searchParams.set('cart_item_id', product.uid);
+        url.searchParams.set('updateCartItem', 'true');
+        url.searchParams.set('cartItemId', product.uid);
         return url.toString();
       },
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,

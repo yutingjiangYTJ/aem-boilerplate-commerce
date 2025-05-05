@@ -33,9 +33,9 @@ import { rootLink } from '../../scripts/scripts.js';
  * @returns {Object|null} The update info object or null
  */
 function getUpdateCartInfo() {
-  return window.location.search.includes('update_cart_item=true') ? {
+  return window.location.search.includes('updateCartItem=true') ? {
     isUpdating: true,
-    cartItemId: new URLSearchParams(window.location.search).get('cart_item_id') || null,
+    cartItemId: new URLSearchParams(window.location.search).get('cartItemId') || null,
   } : null;
 }
 
@@ -164,15 +164,9 @@ export default async function decorate(block) {
             await addProductsToCart([{ ...values }]);
             
             if (updateCartInfo && product) {
-              sessionStorage.setItem('cart_updated_product', JSON.stringify({
-                id: values.sku,
-                name: product.name,
-                timestamp: Date.now(),
-              }));
-              
               const cartUrl = new URL(rootLink('/cart'), window.location.origin);
-              cartUrl.searchParams.append('updated_product_name', encodeURIComponent(product.name));
-              cartUrl.searchParams.append('updated_product_sku', values.sku);
+              cartUrl.searchParams.append('updatedProductName', encodeURIComponent(product.name));
+              cartUrl.searchParams.append('updatedProductSku', values.sku);
               
               window.location.href = cartUrl.toString();
             }
