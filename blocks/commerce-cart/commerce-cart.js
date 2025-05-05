@@ -22,62 +22,6 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/commerce.js';
 
-/**
- * Checks for cart update information from URL
- * @returns {Object|null} The updated product info or null if no update
- */
-function getCartUpdateInfo() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const updatedProductName = urlParams.get('updatedProductName');
-  if (updatedProductName) {
-    return {
-      name: decodeURIComponent(updatedProductName),
-      id: urlParams.get('updatedProductSku'),
-    };
-  }
-
-  const updatedSku = urlParams.get('updatedSku');
-  if (updatedSku) {
-    try {
-      if (cart?.items) {
-        const item = cart.items.find(i =>
-          i.product?.sku === updatedSku || i.sku === updatedSku
-        );
-        if (item) {
-          return {
-            name: item.product?.name || item.name,
-            id: updatedSku
-          };
-        }
-      }
-      return { id: updatedSku };
-    } catch (e) {
-      console.error('Error processing updatedSku:', e);
-      return { id: updatedSku };
-    }
-  }
-
-  const itemUid = urlParams.get('itemUid');
-  if (itemUid) {
-    try {
-      if (cart?.items) {
-        const item = cart.items.find(i => i.uid === itemUid);
-        if (item) {
-          return {
-            name: item.product?.name || item.name,
-            id: item.product?.sku || item.sku,
-            uid: itemUid
-          };
-        }
-      }
-    } catch (e) {
-      console.error('Error processing itemUid:', e);
-    }
-  }
-
-  return null;
-}
-
 export default async function decorate(block) {
   // Configuration
   const {
@@ -123,29 +67,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
-  const updateInfo = getCartUpdateInfo();
-  if (updateInfo) {
-    (async () => {
-      if (updateInfo.name) {
-        const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
-          .replace('{product}', updateInfo.name);
-
-        await UI.render(InLineAlert, {
-          heading: message,
-          type: 'success',
-          variant: 'primary',
-          icon: Icon({ source: 'CheckWithCircle' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          onDismiss: () => $notification.innerHTML = ''
-        })($notification);
-      }
-
-      if (window.location.search) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    })();
-  }
+  let isShownUpdateNotification = false;
 
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
@@ -169,7 +91,7 @@ export default async function decorate(block) {
         const path = `/products/${product.url.urlKey}/${product.topLevelSku}`;
         const url = new URL(rootLink(path), window.location.origin);
         url.searchParams.set('updateCartItem', 'true');
-        url.searchParams.set('cartItemId', product.uid);
+        url.searchParams.set('itemUid', product.uid);
         return url.toString();
       },
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
@@ -242,6 +164,39 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (payload) => {
+      if (!isShownUpdateNotification) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemUid = urlParams.get('itemUid');
+        
+        if (itemUid && payload?.items?.length > 0) {
+          const updatedItem = payload.items.find(item => item.uid === itemUid);
+          
+          if (updatedItem) {
+            const productName = updatedItem.name || updatedItem.product?.name || 'Product';
+            const message = (placeholders?.Cart?.UpdatedProductMessage || '{product} was updated in your shopping cart.')
+              .replace('{product}', productName);
+            
+            UI.render(InLineAlert, {
+              heading: message,
+              type: 'success',
+              variant: 'primary',
+              icon: Icon({ source: 'CheckWithCircle' }),
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => $notification.innerHTML = ''
+            })($notification);
+          } else {
+            console.warn('Could not find updated item in cart data for UID:', itemUid);
+          }
+          
+          if (window.location.search) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        }
+        
+        isShownUpdateNotification = true;
+      }
+      
       toggleEmptyCart(isCartEmpty(payload));
 
       if (!cartViewEventPublished) {

@@ -35,7 +35,7 @@ import { rootLink } from '../../scripts/scripts.js';
 function getUpdateCartInfo() {
   return window.location.search.includes('updateCartItem=true') ? {
     isUpdating: true,
-    cartItemId: new URLSearchParams(window.location.search).get('cartItemId') || null,
+    itemUid: new URLSearchParams(window.location.search).get('itemUid') || null,
   } : null;
 }
 
@@ -144,13 +144,13 @@ export default async function decorate(block) {
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
-      children: labels.PDP?.Product?.AddToCart?.label || 'Add to Cart',
+      children: labels.PDP?.Product?.AddToCart?.label,
       icon: Icon({ source: 'Cart' }),
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.Custom?.AddingToCart?.label || 'Adding to Cart',
+            children: labels.Custom?.AddingToCart?.label,
             disabled: true,
           }));
 
@@ -165,8 +165,7 @@ export default async function decorate(block) {
             
             if (updateCartInfo && product) {
               const cartUrl = new URL(rootLink('/cart'), window.location.origin);
-              cartUrl.searchParams.append('updatedProductName', encodeURIComponent(product.name));
-              cartUrl.searchParams.append('updatedProductSku', values.sku);
+              cartUrl.searchParams.append('itemUid', updateCartInfo.itemUid);
               
               window.location.href = cartUrl.toString();
             }
